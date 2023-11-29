@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EsentaSMS.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(EsentaSMSContext))]
     [Migration("20231122231338_databasechange")]
     partial class databasechange
     {

@@ -1,6 +1,9 @@
 using EsentaSMS.Components;
 using EsentaSMS.Components.Account;
 using EsentaSMS.Data;
+using EsentaSMS.Repository;
+using EsentaSMS.Services;
+using EsentaSMS.Services.Interface;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +28,7 @@ builder.Services.AddAuthentication(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<EsentaSMSContext>(options =>
     options.UseSqlServer(connectionString)); 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -40,11 +43,22 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
         options.Password.RequireNonAlphanumeric = false;
     })
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddEntityFrameworkStores<EsentaSMSContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+//Dependency injection UseCase
+builder.Services.AddTransient<IOrganisationService, OrganisationService>();
+builder.Services.AddTransient<IRecipientGrpService, RecipientGrpService>();
+
+
+//Dependency injection Repository
+builder.Services.AddTransient<IOrganisationRepository, OrganisationRepository>();
+builder.Services.AddTransient<IRecipientGrpRepository, RecipientGrpRepository>();
+
+
 
 var app = builder.Build();
 

@@ -31,6 +31,12 @@
   <ItemGroup>
     <None Include="Components\Account\Pages\ClaimComponent.razor" />
     <None Include="Components\Account\Pages\AccessDenied.razor" />
+    <None Include="Components\Pages\OrganisationPage\AddOrganisation.razor" />
+    <None Include="Components\Pages\OrganisationPage\EditOrganisation .razor" />
+    <None Include="Components\Pages\OrganisationPage\OrganisationList.razor" />
+    <None Include="Components\Pages\RecipientGrpPage\AddRecipientGrp.razor" />
+    <None Include="Components\Pages\RecipientGrpPage\EditRecipientGrp .razor" />
+    <None Include="Components\Pages\RecipientGrpPage\RecipientGrpList.razor" />
   </ItemGroup>
 
   <ItemGroup>

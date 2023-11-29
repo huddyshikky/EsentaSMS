@@ -1,0 +1,72 @@
+﻿@page "/Organisation"
+@inject NavigationManager navigationManager
+@inject IOrganisationService OrganisationService
+
+
+
+<div class="container ">
+    <div class="col-md-10 mx-auto">
+        <div class="row ">
+            <div class="card shadow p-0 overflow-auto">
+                <div class="card-header p-0">
+                    <div class="row">
+                        <div class="col">Organisation Details</div>
+                        <div class="col-2 mx-auto">
+                            <div class="row mx-auto">
+                                <button type="button" class="btn btn-outline-danger" @onclick="OnClose">X</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+
+                    <button type="button" class="btn btn-outline-success mb-2" @onclick="AddOrganisation">Add New</button>
+                    <br />
+                    @if (Organisation != null)
+                {
+                    @foreach (var Organisation in Organisation)
+                    {
+                        <OrganisationItemComponent Organisation="Organisation" OnDelete="OnDelete"></OrganisationItemComponent>
+
+                    }
+
+                }
+                </div>
+
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Organisation>? Organisation;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+    private void AddOrganisation()
+    {
+        navigationManager.NavigateTo("/addOrganisation");
+    }
+    private void OnDelete()
+    {
+        LoadData();
+        StateHasChanged();
+    }
+    private async void LoadData()
+    {
+        var result = await OrganisationService.GetAllOrganisationAsync();
+        Organisation = result.ToList();
+    }
+
+    private void OnClose()
+    {
+        navigationManager.NavigateTo("/");
+    }
+
+}

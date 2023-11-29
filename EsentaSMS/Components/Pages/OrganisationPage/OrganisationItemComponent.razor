@@ -1,0 +1,51 @@
+﻿@inject NavigationManager navigationManager
+@inject IOrganisationService OrganisationService
+
+@if (Organisation != null)
+{
+
+<div class="card border-dark mb-2">
+
+    <div class="card-body">
+
+        <div class="row flex-row align-items-center">
+            <div class="col-sm col-md-4 ">
+                    <img src="images/@(Organisation.Logo)" class="img-thumbnail card-img-bottom rounded-circle" alt="...">
+            </div>
+
+            <div class="col-sm col-md-6 col-lg-6 ">
+                    <h5 class="card-title my-0 ">@Organisation.Name</h5>
+                    <p class="card-text my-0">@Organisation.Address</p>
+            </div>
+            <div class="col-sm col-md-2 ">
+                <div class="row">
+                        <button type="button" class=" col btn btn-primary me-sm-2 " @onclick="(()=>OnEdit(Organisation.Id))">Edit</button>
+                        <button type="button" class="col btn btn-danger " @onclick="(()=>Delete(Organisation.Id))">Delete</button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+}
+@code {
+
+    [Parameter]
+    public Organisation? Organisation { get; set; }
+
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
+
+    private void OnEdit(int Id)
+    {
+        navigationManager.NavigateTo($"/editOrganisation/{Id}");
+    }
+
+    private void Delete(int Id)
+    {
+        OrganisationService.DeleteOrganisationAsync(Id);
+        OnDelete.InvokeAsync();
+        //navigationManager.NavigateTo($"/Organisation");
+    }
+}

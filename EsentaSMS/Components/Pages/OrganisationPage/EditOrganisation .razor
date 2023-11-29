@@ -1,0 +1,99 @@
+﻿
+@page "/EditOrganisation/{Id:int}"
+@inject NavigationManager navigationManager
+@inject IOrganisationService OrganisationService
+
+
+<div class="card align-items-center">
+    <div class=" card-header">
+        <div class="row">
+            <div class="col">Edit Organisation Details  </div>
+            <div class="col-2"><button type="button" class=" btn btn-outline-danger" @onclick="OnClose">X</button></div>          
+        </div>
+        
+    </div>
+
+    <div class="card-body">
+        @if (organisation != null)
+        {
+           
+            <EditForm Model="organisation" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
+                
+                <div class="form-floating shadow">
+                    <InputText id="orgname" placeholder="Name" class="form-control" @bind-Value="organisation.Name"></InputText>
+                    <label for="orgname" placeholder="Name">Name</label>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <InputText id="address" placeholder="Address" class="form-control" @bind-Value="organisation.Address"></InputText>
+                </div>
+
+                <div class="form-group">
+                    <label for="telephone">Telephone</label>
+                    <InputText id="telephone" placeholder="Phone" class=" form-control" @bind-Value="organisation.Phone"></InputText>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <InputText id="email" placeholder="myemail@example.com" class="form-control" @bind-Value="organisation.Email"></InputText>
+                </div>
+
+                <div class="form-floating shadow">
+                    <InputText id="City" placeholder="City" class="form-control" @bind-Value="organisation.City"></InputText>
+                    <label for="City" placeholder="City">City</label>
+
+                </div>
+                <div class="form-floating shadow">
+                    <InputText id="Logo" placeholder="Logo" class="form-control" @bind-Value="organisation.Logo"></InputText>
+                    <label for="Logo" placeholder="Logo">Logo</label>
+
+                </div>
+
+                <br/>
+                <button type="submit" class="btn btn-primary ">Update</button>
+            </EditForm>
+        }
+
+    </div>
+</div>
+
+
+<br />
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Organisation organisation = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        organisation = await OrganisationService.GetOrganisationByIdAsync(Id);
+    }
+
+    private async void OnValidSubmit()
+    {
+        if (this.organisation!=null)
+        {
+            await OrganisationService.EditOrganisationAsync(this.organisation);
+            OnClose();
+        }
+
+    }
+    private void OnClose()
+    {
+        StateHasChanged();
+        navigationManager.NavigateTo("/Organisation");
+    }
+}

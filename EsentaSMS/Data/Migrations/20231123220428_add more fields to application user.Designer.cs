@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EsentaSMS.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(EsentaSMSContext))]
     [Migration("20231123220428_add more fields to application user")]
     partial class Addmorefieldstoapplicationuser
     {

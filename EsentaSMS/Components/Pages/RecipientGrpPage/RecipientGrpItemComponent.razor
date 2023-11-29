@@ -1,0 +1,37 @@
+﻿@inject NavigationManager navigationManager
+@inject IRecipientGrpService RecipientGrpService
+
+@if (RecipientGrp != null)
+{
+    <tr class="row">
+        <td class="col-lg-8">@RecipientGrp.GroupName</td>
+        <td class="col-lg-4 ">
+            <div class="row mx-auto">
+                <button type="button  " class="col btn btn-primary m-1" @onclick="(()=>OnEdit(RecipientGrp.Id))">Edit</button>
+                <button type="button " class="col btn btn-danger m-1" @onclick="(()=>Delete(RecipientGrp.Id))">Delete</button>
+            </div>
+        </td>
+    </tr>
+
+                    
+}
+@code {
+
+    [Parameter]
+    public RecipientGrp? RecipientGrp { get; set; }
+
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
+
+    private void OnEdit(int Id)
+    {
+        navigationManager.NavigateTo($"/editRecipientGrp/{Id}");
+    }
+
+    private void Delete(int Id)
+    {
+        RecipientGrpService.DeleteRecipientGrpAsync(Id);
+        OnDelete.InvokeAsync();
+        //navigationManager.NavigateTo($"/Organisation");
+    }
+}

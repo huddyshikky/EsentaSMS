@@ -1,0 +1,71 @@
+﻿
+@page "/editRecipientGrp/{Id:int}"
+@inject NavigationManager navigationManager
+@inject IRecipientGrpService RecipientGrpService
+
+
+<div class="card align-items-center">
+    <div class=" card-header">
+        <div class="row">
+            <div class="col">Edit RecipientGrp Details </div>
+            <div class="col-2"><button type="button" class=" btn btn-outline-danger" @onclick="OnClose">X</button></div>          
+        </div>
+        
+    </div>
+
+    <div class="card-body">
+        @if (RecipientGrp != null)
+        {
+           
+            <EditForm Model="RecipientGrp" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
+                <div class="form-group">
+                    <label for="GroupName">Group Name</label>
+                    <InputText id="GroupName" placeholder="GroupName" class="form-control" @bind-Value="RecipientGrp.GroupName"></InputText>
+                </div>
+                
+                <br/>
+                <button type="submit" class="btn btn-primary ">Update</button>
+            </EditForm>
+        }
+
+    </div>
+</div>
+
+
+<br />
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }  
+
+    private RecipientGrp RecipientGrp=new() ;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        RecipientGrp = await RecipientGrpService.GetRecipientGrpByIdAsync(Id);
+    }
+
+    private async void OnValidSubmit()
+    {
+        if (this.RecipientGrp!=null)
+        {
+            await RecipientGrpService.EditRecipientGrpAsync(this.RecipientGrp);
+            OnClose();
+        }
+
+    }
+    private void OnClose()
+    {
+        StateHasChanged();
+        navigationManager.NavigateTo("/RecipientGrp");
+    }
+}

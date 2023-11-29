@@ -1,0 +1,81 @@
+﻿@page "/recipientgrp"
+@inject NavigationManager navigationManager
+@inject IRecipientGrpService RecipientGrpService
+
+<div class="row ">
+    <div class="col-md-10 mx-auto">
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">Recipient Group</div>
+                    <div class="col-2 mx-auto">
+                        <div class="row mx-auto">
+                            <button type="button" class="btn btn-outline-danger" @onclick="OnClose">X</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-outline-success mb-2" @onclick="AddRecipientGrp">Add New</button>
+                <br />
+                <hr />
+
+                @if (RecipientGrp != null)
+                {
+                    <table class="table table-responsive table-bordered table-hover table-striped">
+                        <thead>
+                            <tr class="row">
+                                <th class="col-8">Name</th>
+                                <th class="col-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var RecipientGrp in RecipientGrp)
+                            {
+                                <RecipientGrpItemComponent RecipientGrp="RecipientGrp" OnDelete="OnDelete"></RecipientGrpItemComponent>
+
+                            }
+
+
+                        </tbody>
+                    </table>
+
+                }
+
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+@code {
+    private List<RecipientGrp>? RecipientGrp;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+    private void AddRecipientGrp()
+    {
+        navigationManager.NavigateTo("/addRecipientGrp");
+    }
+    private void OnDelete()
+    {
+        LoadData();
+        StateHasChanged();
+    }
+    private async void LoadData()
+    {
+        var result = await RecipientGrpService.GetAllRecipientGrpAsync();
+        RecipientGrp = result.ToList();
+    }
+    private void OnClose()
+    {
+        navigationManager.NavigateTo("/");
+    }
+    
+
+}
