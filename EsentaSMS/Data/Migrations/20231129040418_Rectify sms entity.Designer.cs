@@ -4,6 +4,7 @@ using EsentaSMS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EsentaSMS.Migrations
 {
     [DbContext(typeof(EsentaSMSContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231129040418_Rectify sms entity")]
+    partial class Rectifysmsentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,35 +141,6 @@ namespace EsentaSMS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Organisations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "P.o Box 1950 - 30200 Kitale",
-                            Email = "infor@esentacomputerlab.co.ke",
-                            Logo = "esenta.jpg",
-                            Name = "Esenta Computer Lab",
-                            Phone = "0725 319 665"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "P.o Box 1950 - 30200 Kitale",
-                            Email = "infor@esentacomputerlab.co.ke",
-                            Logo = "esenta.jpg",
-                            Name = "Esenta Computer Lab",
-                            Phone = "0725 319 665"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "P.o Box 1950 - 30200 Kitale",
-                            Email = "infor@esentacomputerlab.co.ke",
-                            Logo = "esenta.jpg",
-                            Name = "Esenta Computer Lab",
-                            Phone = "0725 319 665"
-                        });
                 });
 
             modelBuilder.Entity("EsentaSMS.Data.Models.Recipient", b =>

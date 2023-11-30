@@ -8,8 +8,8 @@ namespace EsentaSMS.Repository
     {
         Task<Organisation?> GetOrganisationById(int Id);
         Task<IEnumerable<Organisation?>> GetOrganisation();
-        Task AddOrganisation(Organisation organisation);
-        Task UpdateOrganisation(Organisation organisation);
+        Task<Organisation?> AddOrganisation(Organisation organisation);
+        Task<Organisation?> UpdateOrganisation(Organisation organisation);
         Task DeleteOrganisation(int Id);
     }
 }

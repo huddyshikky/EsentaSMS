@@ -7,33 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 namespace EsentaSMS.Repository
 {
-    public class OrganisationRepository : IOrganisationRepository
+    public class OrganisationRepository(EsentaSMSContext SMSContext) : IOrganisationRepository
     {
-        private readonly EsentaSMSContext db;
-
-        public OrganisationRepository(EsentaSMSContext SMSContext)
-        {
-            db = SMSContext;
-        }
+        private readonly EsentaSMSContext db = SMSContext;
 
         public async Task<Organisation?> GetOrganisationById(int Id)
         {
-            var FoundOrganisation = await db.Organisations.FindAsync(Id);
-            if (FoundOrganisation == null) return FoundOrganisation;
-
-            Organisation RetOrg = new()
-            {
-                Id = FoundOrganisation.Id,
-                Name = FoundOrganisation.Name,
-                Address = FoundOrganisation.Address,
-                Phone = FoundOrganisation.Phone,
-                Email = FoundOrganisation.Email,
-                City = FoundOrganisation.City,
-                County = FoundOrganisation.County,
-                Logo = FoundOrganisation.Logo
-            };
-
-            return RetOrg;
+            return await db.Organisations.FindAsync(Id);
         }
 
         public async Task<IEnumerable<Organisation?>> GetOrganisation()
@@ -41,39 +21,35 @@ namespace EsentaSMS.Repository
             return await db.Organisations.ToListAsync();
         }
 
-        //public async Task<organisation?> GetorganisationById(int Id)
-        //{
-        //    return await db.Organisations.Where(x=> x.Id ==Id).FirstOrDefaultAsync();
-        //}
-
-        public async Task AddOrganisation(Organisation organisation)
+        public async Task<Organisation?> AddOrganisation(Organisation organisation)
         {
-            if (db.Organisations.Any(x => x.Name.Equals(organisation.Name, StringComparison.OrdinalIgnoreCase))) return;
+            if (db.Organisations.Any(x => x.Name.ToLower().Equals(organisation.Name.ToLower()))) return null;
+          
+
             db.Organisations.Add(organisation);
             await db.SaveChangesAsync();
+
+            return organisation;    
         }
 
-        public async Task UpdateOrganisation(Organisation organisation)
+        public async Task<Organisation?> UpdateOrganisation(Organisation updatedOrganisation)
         {
-            var foundDetails = await db.Organisations.FindAsync((object)organisation.Id);
-
-            //Prevent Duplicate Names
-
-            if (db.Organisations.Any(x => x.Id != organisation.Id && x.Name.ToLower() == organisation.Name.ToLower())) return;
-
-            if (foundDetails != null)
+             
+            var existingOrganisation = await db.Organisations.FindAsync(updatedOrganisation.Id);    
+            if (existingOrganisation != null)
             {
-                foundDetails.Name = organisation.Name;
-                foundDetails.Address = organisation.Address;
-                foundDetails.Phone = organisation.Phone;
-                foundDetails.Email = organisation.Email;
-                foundDetails.City = organisation.City;
-                foundDetails.County = organisation.County;
-                foundDetails.Logo = organisation.Logo;
+                existingOrganisation.Name = updatedOrganisation.Name;
+                existingOrganisation.Address = updatedOrganisation.Address;
+                existingOrganisation.Phone = updatedOrganisation.Phone;
+                existingOrganisation.Email = updatedOrganisation.Email;
+                existingOrganisation.City = updatedOrganisation.City;
+                existingOrganisation.County = updatedOrganisation.County;
+                existingOrganisation.Logo = updatedOrganisation.Logo;
 
                 await db.SaveChangesAsync();
+                return existingOrganisation;
             }
-
+            return null;
         }
 
 

@@ -8,8 +8,8 @@ namespace EsentaSMS.Data.Models
         public int Id { get; set; }
 
         [Required]
-        public string? GroupName { get; set; }
+        public string GroupName { get; set; }
 
-        public ICollection<Recipient>? Recipients { get; set; }
+        public ICollection<Recipient> Recipients { get; set; }
     }
 }

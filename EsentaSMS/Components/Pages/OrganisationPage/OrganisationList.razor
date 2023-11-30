@@ -1,21 +1,23 @@
 ﻿@page "/Organisation"
 @inject NavigationManager navigationManager
 @inject IOrganisationService OrganisationService
-
+@rendermode InteractiveServer
 
 
 <div class="container ">
     <div class="col-md-10 mx-auto">
         <div class="row ">
-            <div class="card shadow p-0 overflow-auto">
-                <div class="card-header p-0">
+            <div class="card shadow overflow-auto">
+                <div class="card-header ">
                     <div class="row">
                         <div class="col">Organisation Details</div>
-                        <div class="col-2 mx-auto">
-                            <div class="row mx-auto">
-                                <button type="button" class="btn btn-outline-danger" @onclick="OnClose">X</button>
-                            </div>
+                        <a class="m-2 col-2 btn btn-outline-danger float-end" @onclick="OnClose">X</a>
+                        @*  <div class="col-2 mx-auto">
+                        <div class="row mx-auto">
+
+                        <button type="button"  @onclick='(()=>navigationManager.NavigateTo("/",true))'>X</button>
                         </div>
+                        </div> *@
                     </div>
 
                 </div>
@@ -24,15 +26,14 @@
 
                     <button type="button" class="btn btn-outline-success mb-2" @onclick="AddOrganisation">Add New</button>
                     <br />
-                    @if (Organisation != null)
-                {
-                    @foreach (var Organisation in Organisation)
+                    @if (Organisations != null)
                     {
-                        <OrganisationItemComponent Organisation="Organisation" OnDelete="OnDelete"></OrganisationItemComponent>
+                        @foreach (var Organisation in Organisations)
+                        {
+                            <OrganisationItemComponent Organisation="Organisation" OnDelete="OnDelete"></OrganisationItemComponent>
+                        }
 
                     }
-
-                }
                 </div>
 
                 <div class="card-footer">
@@ -43,25 +44,26 @@
 </div>
 
 @code {
-    private List<Organisation>? Organisation;
+    private List<Organisation>? Organisations;
 
     protected override async Task OnInitializedAsync()
     {
-        LoadData();
+        var result = await OrganisationService.GetAllOrganisationAsync();
+        Organisations = result.ToList();
     }
     private void AddOrganisation()
     {
         navigationManager.NavigateTo("/addOrganisation");
     }
-    private void OnDelete()
+    private void OnOrganisationAdded(Organisation newOrganisation)
     {
-        LoadData();
+        Organisations.Add(newOrganisation);
         StateHasChanged();
     }
-    private async void LoadData()
+    private void OnDelete(Organisation organisation)
     {
-        var result = await OrganisationService.GetAllOrganisationAsync();
-        Organisation = result.ToList();
+        Organisations.Remove(organisation);
+        StateHasChanged();
     }
 
     private void OnClose()

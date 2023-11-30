@@ -2,6 +2,7 @@
 @page "/EditOrganisation/{Id:int}"
 @inject NavigationManager navigationManager
 @inject IOrganisationService OrganisationService
+@rendermode InteractiveServer
 
 
 <div class="card align-items-center">
@@ -47,7 +48,7 @@
                     <label for="City" placeholder="City">City</label>
 
                 </div>
-                <div class="form-floating shadow">
+                <div class="form-floating shadow mb-3">
                     <InputText id="Logo" placeholder="Logo" class="form-control" @bind-Value="organisation.Logo"></InputText>
                     <label for="Logo" placeholder="Logo">Logo</label>
 
@@ -86,7 +87,7 @@
     {
         if (this.organisation!=null)
         {
-            await OrganisationService.EditOrganisationAsync(this.organisation);
+            await OrganisationService.UpdateOrganisationAsync(this.organisation);
             OnClose();
         }
 

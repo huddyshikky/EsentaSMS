@@ -7,7 +7,7 @@
         <td class="col-lg-8">@RecipientGrp.GroupName</td>
         <td class="col-lg-4 ">
             <div class="row mx-auto">
-                <button type="button  " class="col btn btn-primary m-1" @onclick="(()=>OnEdit(RecipientGrp.Id))">Edit</button>
+                <button type="button  " class="col btn btn-primary m-1" @onclick="Edit">Edit</button>
                 <button type="button " class="col btn btn-danger m-1" @onclick="(()=>Delete(RecipientGrp.Id))">Delete</button>
             </div>
         </td>
@@ -21,17 +21,19 @@
     public RecipientGrp? RecipientGrp { get; set; }
 
     [Parameter]
-    public EventCallback OnDelete { get; set; }
+    public EventCallback<RecipientGrp> OnDelete { get; set; }
 
-    private void OnEdit(int Id)
+    [Parameter]
+    public EventCallback<RecipientGrp> OnEdit { get; set; }
+
+    private void Edit()
     {
-        navigationManager.NavigateTo($"/editRecipientGrp/{Id}");
+        OnEdit.InvokeAsync(RecipientGrp);
     }
 
     private void Delete(int Id)
     {
-        RecipientGrpService.DeleteRecipientGrpAsync(Id);
-        OnDelete.InvokeAsync();
-        //navigationManager.NavigateTo($"/Organisation");
+        //RecipientGrpService.DeleteRecipientGrpAsync(Id);
+        OnDelete.InvokeAsync(RecipientGrp);
     }
 }

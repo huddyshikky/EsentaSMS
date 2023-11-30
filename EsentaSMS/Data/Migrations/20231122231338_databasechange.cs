@@ -5,7 +5,7 @@
 namespace EsentaSMS.Migrations
 {
     /// <inheritdoc />
-    public partial class databasechange : Migration
+    public partial class Databasechange : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

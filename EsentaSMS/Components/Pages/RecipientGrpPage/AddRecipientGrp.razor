@@ -1,34 +1,35 @@
-﻿@page "/addRecipientGrp"
-@inject NavigationManager navigationManager
+﻿
 @inject IRecipientGrpService RecipientGrpService
-<div class="card shadow border-0 align-items-center">
-    <div class=" card-header">
-        <div class="row">
-            <div class="col">Add RecipientGrp Details </div>
-            <div class="col-2"><button type="button" class=" btn btn-outline-danger" @onclick="OnClose">X</button></div>          
+
+<div class="overlay">
+    <div class="card shadow border-0 align-items-center">
+        <div class=" card-header">
+            <div class="row" style="background-color:darkslateblue">
+                <div class="col text-warning">Add RecipientGrp Details </div>
+                <div class="col-2"><button type="button" class=" btn btn-outline-danger" @onclick="CloseOverlayAsync">X</button></div>
+            </div>
+
         </div>
-        
-    </div>
 
-    <div class="card-body">
-        @if (RecipientGrp != null)
-        {
-            <EditForm Model="RecipientGrp" OnValidSubmit="OnValidSubmit">
-                <DataAnnotationsValidator></DataAnnotationsValidator>
-                <ValidationSummary></ValidationSummary>
-                <div class="form-group">
-                    <label for="GroupName">Group Name</label>
-                    <InputText id="GroupName" placeholder="GroupName" class="form-control" @bind-Value="RecipientGrp.GroupName"></InputText>
-                </div>
-               
-                <br/>
-                <button type="submit" class="btn btn-primary ">Save</button>
-            </EditForm>
-        }
+        <div class="card-body">
+            @if (RecipientGrp != null)
+            {
+                <EditForm Model="RecipientGrp" OnValidSubmit="SaveRecipientAsync">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                    <ValidationSummary></ValidationSummary>
+                    <div class="form-group">
+                        <label for="GroupName">Group Name</label>
+                        <InputText id="GroupName" placeholder="GroupName" class="form-control" @bind-Value="RecipientGrp.GroupName"></InputText>
+                    </div>
 
+                    <br />
+                    <button type="submit" class="btn btn-primary ">Save</button>
+                </EditForm>
+            }
+
+        </div>
     </div>
 </div>
-
 
 <br />
 
@@ -36,22 +37,34 @@
 @code {
     private RecipientGrp? RecipientGrp = new();
 
-    protected override Task OnInitializedAsync()
-    {
-        return base.OnInitializedAsync();
+    [Parameter]
+    public EventCallback<RecipientGrp> RecipientGrpAdded { get; set; }
 
-    }
-    private async void OnValidSubmit()
+    [Parameter]
+    public bool IsOverlayVisible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOverlayVisibleChanged { get; set; }
+
+    
+    private async Task SaveRecipientAsync()
     {
-        if (this.RecipientGrp!=null)
+        if (this.RecipientGrp != null)
         {
-            await RecipientGrpService.AddRecipientGrpAsync(this.RecipientGrp);
-            OnClose();
+            var Added = await RecipientGrpService.AddRecipientGrpAsync(RecipientGrp);
+            if (Added is not null)
+            {
+                await RecipientGrpAdded.InvokeAsync(RecipientGrp);
+                await CloseOverlayAsync();
+            }
+            else
+            {
+                Console.WriteLine("Adding new Recipient group Failed");
+            }
         }
-
     }
-    private void OnClose()
+    private async Task CloseOverlayAsync()
     {
-        navigationManager.NavigateTo("/RecipientGrp");
+        await IsOverlayVisibleChanged.InvokeAsync(false);
     }
 }

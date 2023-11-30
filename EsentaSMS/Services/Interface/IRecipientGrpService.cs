@@ -4,10 +4,10 @@ namespace EsentaSMS.Services.Interface
 {
     public interface IRecipientGrpService
     {
-        Task AddRecipientGrpAsync(RecipientGrp recipientGrp);
+        Task<RecipientGrp?> AddRecipientGrpAsync(RecipientGrp recipientGrp);
         Task DeleteRecipientGrpAsync(int Id);
-        Task EditRecipientGrpAsync(RecipientGrp recipientGrp);
-        Task<RecipientGrp> GetRecipientGrpByIdAsync(int Id);
-        Task<IEnumerable<RecipientGrp>> GetAllRecipientGrpAsync();
+        Task<RecipientGrp?> UpdateRecipientGrpAsync(RecipientGrp UpdatedRecipientGrp);
+        Task<RecipientGrp?> GetRecipientGrpByIdAsync(int Id);
+        Task<IEnumerable<RecipientGrp>?> GetAllRecipientGrpAsync();
     }
 }

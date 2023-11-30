@@ -4,18 +4,13 @@ using EsentaSMS.Services.Interface;
 
 namespace EsentaSMS.Services
 {
-    public class OrganisationService : IOrganisationService
+    public class OrganisationService(IOrganisationRepository _OrganisationRepository) : IOrganisationService
     {
-        private readonly IOrganisationRepository OrganisationRepository;
+        private readonly IOrganisationRepository OrganisationRepository = _OrganisationRepository;
 
-        public OrganisationService(IOrganisationRepository _OrganisationRepository)
+        public async Task<Organisation?> AddOrganisationAsync(Organisation organisation)
         {
-            OrganisationRepository = _OrganisationRepository;
-        }
-
-        public async Task AddOrganisationAsync(Organisation organisation)
-        {
-            await OrganisationRepository.AddOrganisation(organisation);
+            return await OrganisationRepository.AddOrganisation(organisation);
         }
 
         public async Task DeleteOrganisationAsync(int Id)
@@ -23,9 +18,9 @@ namespace EsentaSMS.Services
             await OrganisationRepository.DeleteOrganisation(Id);
         }
 
-        public async Task EditOrganisationAsync(Organisation organisation)
+        public async Task<Organisation> UpdateOrganisationAsync(Organisation updatedOrganisation)
         {
-            await OrganisationRepository.UpdateOrganisation(organisation);
+            return await OrganisationRepository.UpdateOrganisation(updatedOrganisation);
         }
 
         public async Task<IEnumerable<Organisation>> GetAllOrganisationAsync()

@@ -4,19 +4,13 @@ using EsentaSMS.Services.Interface;
 
 namespace EsentaSMS.Services
 {
-    public class RecipientGrpService: IRecipientGrpService
+    public class RecipientGrpService(IRecipientGrpRepository _RecipientGrpRepository) : IRecipientGrpService
     {
-        private readonly IRecipientGrpRepository RecipientGrpRepository;
+        private readonly IRecipientGrpRepository RecipientGrpRepository = _RecipientGrpRepository;
 
-        public RecipientGrpService(IRecipientGrpRepository _RecipientGrpRepository)
+        public async Task<RecipientGrp?> AddRecipientGrpAsync(RecipientGrp recipientGrp)
         {
-            RecipientGrpRepository = _RecipientGrpRepository;
-        }
-
-
-        public async Task AddRecipientGrpAsync(RecipientGrp recipientGrp)
-        {
-            await RecipientGrpRepository.AddRecipientGrp(recipientGrp);
+            return await RecipientGrpRepository.AddRecipientGrp(recipientGrp);
         }
 
         public async Task DeleteRecipientGrpAsync(int Id)
@@ -24,9 +18,9 @@ namespace EsentaSMS.Services
             await RecipientGrpRepository.DeleteRecipientGrp(Id);
         }
 
-        public async Task EditRecipientGrpAsync(RecipientGrp recipientGrp)
+        public async Task<RecipientGrp?> UpdateRecipientGrpAsync(RecipientGrp UpdatedRecipientGrp)
         {
-            await RecipientGrpRepository.UpdateRecipientGrp(recipientGrp);
+            return await RecipientGrpRepository.UpdateRecipientGrp(UpdatedRecipientGrp);
         }
 
         public async Task<IEnumerable<RecipientGrp>> GetAllRecipientGrpAsync()

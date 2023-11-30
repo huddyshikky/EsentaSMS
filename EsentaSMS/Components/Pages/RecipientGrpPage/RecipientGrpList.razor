@@ -2,80 +2,118 @@
 @inject NavigationManager navigationManager
 @inject IRecipientGrpService RecipientGrpService
 
-<div class="row ">
-    <div class="col-md-10 mx-auto">
-        <div class="card shadow">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col">Recipient Group</div>
-                    <div class="col-2 mx-auto">
-                        <div class="row mx-auto">
-                            <button type="button" class="btn btn-outline-danger" @onclick="OnClose">X</button>
+@rendermode InteractiveServer
+
+@if (AddOverlayVisible)
+{
+    <AddRecipientGrp @bind-IsOverlayVisible="AddOverlayVisible" RecipientGrpAdded="OnRecipientGrpAdded"></AddRecipientGrp>
+}
+else if (EditOverlayVisible)
+{
+    <EditRecipientGrp_ @bind-IsOverlayVisible="EditOverlayVisible" RecipientGrp="RecipientGrp" RecipientGrpUpdated="OnRecipientGrpUpdate"></EditRecipientGrp_>
+}
+else
+{
+    <div class="row ">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow">
+                <div class="card-header px-2 py-0 mx-1">
+                    <div class="row" style="background-color:darkslateblue">
+                        <div class="col text-warning">Available Recipient Group</div>
+                        <div class="col-2 mx-auto">
+                            <div class="row mx-auto">
+                                <button type="button" class="btn btn-outline-danger" @onclick="OnClose">X</button>
+                            </div>
                         </div>
                     </div>
+
                 </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-outline-success mb-2" @onclick="OnAddRecipientGrpClick">Add New</button>
+                    <br />
+                    <hr />
 
+                    @if (RecipientGrps != null)
+                    {
+                        <table class="table table-responsive table-bordered table-hover table-striped">
+                            <thead>
+                                <tr class="row">
+                                    <th class="col-8">Name</th>
+                                    <th class="col-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var RecGrp in RecipientGrps)
+                                {
+                                    <RecipientGrpItemComponent RecipientGrp="RecGrp" OnEdit="OnEditRecipientGrpClick" OnDelete="OnRecipientGrpDelete"></RecipientGrpItemComponent>
+
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    }
+
+                </div>
+                <div class="card-footer">
+                </div>
             </div>
-            <div class="card-body">
-                <button type="button" class="btn btn-outline-success mb-2" @onclick="AddRecipientGrp">Add New</button>
-                <br />
-                <hr />
 
-                @if (RecipientGrp != null)
-                {
-                    <table class="table table-responsive table-bordered table-hover table-striped">
-                        <thead>
-                            <tr class="row">
-                                <th class="col-8">Name</th>
-                                <th class="col-4">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var RecipientGrp in RecipientGrp)
-                            {
-                                <RecipientGrpItemComponent RecipientGrp="RecipientGrp" OnDelete="OnDelete"></RecipientGrpItemComponent>
-
-                            }
-
-
-                        </tbody>
-                    </table>
-
-                }
-
-            </div>
-            <div class="card-footer">
-            </div>
         </div>
+    </div>
+}
 
-    </div>
-    </div>
+
 
 @code {
-    private List<RecipientGrp>? RecipientGrp;
+
+    private List<RecipientGrp>? RecipientGrps = new();
+    private RecipientGrp? RecipientGrp ;
+
+    private bool AddOverlayVisible { get; set; } = false;
+
+    private bool EditOverlayVisible { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
-        LoadData();
+        var result = await RecipientGrpService.GetAllRecipientGrpAsync();
+        RecipientGrps = result.ToList();
     }
-    private void AddRecipientGrp()
+
+    private void OnAddRecipientGrpClick()
     {
-        navigationManager.NavigateTo("/addRecipientGrp");
+        AddOverlayVisible = true;
     }
-    private void OnDelete()
+    private void OnEditRecipientGrpClick(RecipientGrp RecipientGrpToEdit)
     {
-        LoadData();
+        RecipientGrp = RecipientGrpToEdit;
+        EditOverlayVisible = true;
+    }
+
+    private void OnRecipientGrpAdded(RecipientGrp newRecipientGrp)
+    {
+        RecipientGrps.Add(newRecipientGrp);
         StateHasChanged();
     }
-    private async void LoadData()
+
+    private void OnRecipientGrpUpdate(RecipientGrp EditedRecipientGrp)
     {
-        var result = await RecipientGrpService.GetAllRecipientGrpAsync();
-        RecipientGrp = result.ToList();
+        //RecipientGrps.Add(newRecipientGrp);
+        //StateHasChanged();
     }
+
+    private async Task OnRecipientGrpDelete(RecipientGrp DeletedRecipientGrp)
+    {
+        await RecipientGrpService.DeleteRecipientGrpAsync(DeletedRecipientGrp!.Id);
+        RecipientGrps.Remove(DeletedRecipientGrp);
+       // StateHasChanged();
+    }
+
     private void OnClose()
     {
         navigationManager.NavigateTo("/");
     }
-    
+
 
 }

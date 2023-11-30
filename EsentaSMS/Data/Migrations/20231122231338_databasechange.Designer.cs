@@ -13,7 +13,7 @@ namespace EsentaSMS.Migrations
 {
     [DbContext(typeof(EsentaSMSContext))]
     [Migration("20231122231338_databasechange")]
-    partial class databasechange
+    partial class Databasechange
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

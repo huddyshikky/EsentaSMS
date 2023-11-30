@@ -35,17 +35,16 @@
     public Organisation? Organisation { get; set; }
 
     [Parameter]
-    public EventCallback OnDelete { get; set; }
+    public EventCallback<Organisation> OnDelete { get; set; }
 
     private void OnEdit(int Id)
     {
         navigationManager.NavigateTo($"/editOrganisation/{Id}");
     }
 
-    private void Delete(int Id)
+    private async Task Delete(int Id)
     {
-        OrganisationService.DeleteOrganisationAsync(Id);
-        OnDelete.InvokeAsync();
-        //navigationManager.NavigateTo($"/Organisation");
+        await OrganisationService.DeleteOrganisationAsync(Id);
+        await OnDelete.InvokeAsync(Organisation);
     }
 }

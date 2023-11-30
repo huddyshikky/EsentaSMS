@@ -5,27 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EsentaSMS.Repository
 {
-    public class RecipientGrpRepository : IRecipientGrpRepository
+    public class RecipientGrpRepository(EsentaSMSContext SMSContext) : IRecipientGrpRepository
     {
-        private readonly EsentaSMSContext db;
-
-        public RecipientGrpRepository(EsentaSMSContext SMSContext)
-        {
-            db = SMSContext;
-        }
+        private readonly EsentaSMSContext db = SMSContext;
 
         public async Task<RecipientGrp?> GetRecipientGrpById(int Id)
         {
-            var FoundRecipientGrp = await db.RecipientGrps.FindAsync(Id);
-            if (FoundRecipientGrp == null) return FoundRecipientGrp;
-
-            RecipientGrp RetGroup = new()
-            {
-                Id = FoundRecipientGrp.Id,
-                GroupName = FoundRecipientGrp.GroupName
-            };
-
-            return RetGroup;
+            return await db.RecipientGrps.FindAsync(Id);  
         }
 
         public async Task<IEnumerable<RecipientGrp?>> GetRecipientGrp()
@@ -33,32 +19,28 @@ namespace EsentaSMS.Repository
             return await db.RecipientGrps.ToListAsync();
         }
 
-        //public async Task<RecipientGrp?> GetRecipientGrpById(int Id)
-        //{
-        //    return await db.RecipientGrp.Where(x=> x.Id ==Id).FirstOrDefaultAsync();
-        //}
-
-        public async Task AddRecipientGrp(RecipientGrp RecipientGrp)
+        public async Task<RecipientGrp?> AddRecipientGrp(RecipientGrp RecipientGrp)
         {
-            if (db.RecipientGrps.Any(x => x.GroupName.Equals(RecipientGrp.GroupName, StringComparison.OrdinalIgnoreCase))) return;
+            if (db.RecipientGrps.Any(x => x.GroupName.ToLower().Equals(RecipientGrp.GroupName.ToLower()))) return null;
+            
             db.RecipientGrps.Add(RecipientGrp);
             await db.SaveChangesAsync();
+            return RecipientGrp;
         }
 
-        public async Task UpdateRecipientGrp(RecipientGrp RecipientGrp)
+        public async Task<RecipientGrp?> UpdateRecipientGrp(RecipientGrp UpdatedRecipientGrp)
         {
-            var foundDetails = await db.RecipientGrps.FindAsync((object)RecipientGrp.Id);
+            var existingRecipientGrp = await db.RecipientGrps.FindAsync(UpdatedRecipientGrp.Id);
 
-            //Prevent Duplicate Names
-
-            if (db.RecipientGrps.Any(x => x.Id != RecipientGrp.Id && x.GroupName.ToLower() == RecipientGrp.GroupName.ToLower())) return;
-
-            if (foundDetails != null)
+            if (existingRecipientGrp != null)
             {
-                foundDetails.GroupName = RecipientGrp.GroupName;
+                existingRecipientGrp.GroupName = UpdatedRecipientGrp.GroupName;
+                
                 await db.SaveChangesAsync();
+                return existingRecipientGrp;
             }
 
+            return null;
         }
 
 
